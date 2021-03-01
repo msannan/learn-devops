@@ -1,0 +1,229 @@
+Containers are completely isolated environments, they can have their own process and
+services, their own networking interfaces, their own mounts, they are just like a VM except
+that they all share the same OS kernal.
+
+Docker utilizer LXC containers, ??? todo: study other types
+
+How to get started?
+Go to docks.docker.com and click on Get Docker, select your OS and follow the procedure on
+the manual
+Go to "Install using the convenience script" and enter the following cmds in your terminal
+curl -fsSL https://get.docker.com -o get-docker.sh
+$ sudo sh get-docker.sh
+to check docker version: sudo docker version
+to run without root user:
+sudo usermod -aG docker elmo
+sudo chmod 666 /var/run/docker.sock
+
+Important cmds:
+run: runs an instance of a docker image
+run -d: runs in detached mode
+run -i: interactive mode
+run -it: interactive, attaches terminal also
+run -p: maps port from docker host to docker container
+run -v: maps directory from docker host to docker container
+run -e: set an environment variable
+run --name: gives name to container
+run --entrypoint: overrides the ENTRYPOINT in Dockerfile
+run --link: links current image to a docker image it depends on, e:g redis:redis container:host_name
+run --cpus=.5: does not allow container to use more than 50% of host system cpus
+run --memory=100m: does not allow conatiner to sue mre than 100mb of RAM
+
+attach: re attaches console to detached container
+ps: lists all running containers
+ps -a: included stopped and exited containers also
+stop: stop container, must provide name or id
+rm: remove a stopped or exited container
+images: available images and sizes
+rmi: remove an image, must ensure all contnainer instances running this image are removed before
+pull: only pull image but not run the instance
+exec: run a command on a running container
+inspect: inspects a container
+logs: see the console output of a detached container run in background
+history: see the cmds executed on an image
+build: build a docker image using the Dockerfile
+tag: give a new name to an existing image
+
+docker -H=remote-docker-engine:2375 #used when docker cli is not on same machine as Docker Daemon and Docker Rest API
+
+containerizing an app:
+FROM os
+RUN some-command
+ADD: ??? I think also makes a copy
+COPY from-source to-docker-path
+EXPOSE some-port
+ENV set environment variables
+WORKDIR some-dir
+ENTRYPOINT the command to enter after docker is created, arguments are appended to this
+CMD default command to run, if there's an argument this is totally replaced
+
+docker compose:
+used to pakcage an application stack using multiple docker containers
+docker compose up
+
+DOcker engine is composed of:
+  1. Docker CLI: to perfom action on docker objects using the Daemon via Rest API
+  2. Rest API: programs can use to comunicate to Daemon and provide instructions
+  3. Docker Daemon: backgroud process that manages images, containers, volumes, and networks
+
+Storage:
+docker stores everything at /var/lib/docker
+it has aufs, containers, image, volumes
+
+docker info | more; docker engine overview
+
+to create a volume:
+docker volume create data_volume
+
+volume mount vs bind mount !!!
+
+instead of -v we can also use --mount which is more verbose
+example:
+    docker run --mount type=bind,source=/data/mysql,target=/var/lib/mysql mysql
+
+docker system df: shows the actualy disc usage by docker
+docker system df -v: shows with image/container/volume wise break down of disc usage
+
+Networks:
+by default each container is connected to the "bridge" network. which allows containers
+to communicate to each other. but anyone outside the docker host can not access this
+network unless it is mapped using the -p option.
+you can specify the network using the --network command. i-e, docker run Ubuntu --network=host
+we can also specify network to be equal to "none"
+using the "host" network, docker containers use the same network as the Docker host and
+all network isolation for the docker container is lost this way
+
+user defined networks:
+by default docker only creates one internal bridged network. We can, however, create multiple.
+
+docker network create --driver bridge subnet 182.18.0.0/16 custom-isolated-network
+docker network ls: list all networks
+docker network inspect bridge
+
+example:
+Create a new network named wp-mysql-network using the bridge driver. Allocate subnet 182.18.0.1/24. Configure Gateway 182.18.0.1
+docker network create --driver bridge --subnet 182.18.0.1/24 --gateway 182.18.0.1 wp-mysql-network
+
+
+DOCKER ON WINDOWS:
+
+1. Docker Toolbox
+
+
+2. Docker for Windows
+
+
+
+Docker SWARM
+-------------
+
+Running all your images on a single docker host may not be a good idea for production
+environment as we have a single point of failure. Docker Swarm comes in here to resolve
+the problem.
+
+With Docker swarm you can combine multiple docker hosts into a single cluster.
+
+It distributes your services into multiple docker hosts for high availability,
+
+Not just high availability, it also help balance the load acros the cluster of Docker hosts,
+systems, and hardware.
+
+
+How to set up?
+First you should have multiple dockers hosts installed on multiple machines.
+Then you have to designate one of the node to be master or Swarm Manager of the cluster
+and others as slave workers.
+Once done, run the docker swarm init command on the swarm manager. It will also show the
+command - docker swarm join ... - to be run on the worker nodes. Copy and run on each worker
+node.
+Now you are ready!
+
+Docker Managers
+Master nodes are the ones where the swarm is initiated.
+Manages workers
+Load balancing
+
+Having a single manager node is not recommended !!! single point of failure
+you can have multiple managers.  Conflict of interest !!! Only one manager is allowed to 
+make management decisions. this node is called the leader. the leader can not always make a
+decision on its own. all decisions have to be mutually agreed by the majority or all the
+manager nodes. say a leader makes a decison and fails before informing other managers, the
+cluster will be in an inconsistent state. for example, the leader decides to add a new node
+but fails to notify other and fails; the fututre cluster operations will ignore the new ndoe.
+This is known as distributed consensus. Docker solves by implementing the RAFT consensus
+algorithm. It helps decide the manager if it has enough votes to make a decision and that
+other manager nodes are in sync with the leader.
+
+RAFT uses random timers for initiating requests. for example a random timer is initiated in 3
+manager nodes. the first one to finish the timer, sends a request to other managers to be
+the leader. Other managers respond with their votes. Now that the leader is elected, it sends
+out the notification at regular intervals to other masters informing that it is continuing to
+assume to be the leader. In case other masters dont get this notification for some time, the
+nodes initiate the process to reelect the leader among themselves.
+all master ndoes have a RAFT db which stores the state of the cluster. whenever the leader has
+to add a new node, it sends a notificaiton to other masters and if get back confirmation from
+at least the Quorum(min required to make a decision), it commits the change to the db. This 
+ensures consensus.
+Quorum = (total masters / 2) + 1, use floor for decimals e.g 3.5 -> 3
+Dcoker recommends 7 managers, adding more may slow down ops. but there's no hard limit
+always pick odd number of masters, say if the masters are to be segmented into two groups,
+at least one group will have the quorum to make a decision.
+if one master is left alive, it will not be able to manage the cluster, however, the services will
+continue to run. to be able to manage the cluster bring back the dead masters. if its not 
+possible, run "docker swarm init --force-new-cluster" to bring back the cluster and manage as
+well. run the "docker node promote" command on a worker to make it a master.
+B T W: manager nodes are also worker nodes. to only dedicate a master to only perform management
+ops, run command "docker node update --availability drain <Node>".
+
+docker swarm leave // to leave the cluster
+docker rm <node-name> // to remove from cluster
+dockere swarm join --token manager // to get the command for joining as master
+
+docker node ls // lists how many nodes are part of Docker swarm currently
+
+Docker Service
+----------------
+docker service is one or more instances of a cluster running on the same node or across
+multiple nodes in a docker swarm cluster
+
+docker sevice create --replicas=3 my-web-server
+its same as run command
+its run on master to spread instances across the cluster using its load balancer
+
+docker service create --global adhsjkasd
+it creates one instance on each node
+
+use --name to name the instances. docker swarm appends a number to each conatiner instance
+
+docker service update --replicas=4 my-iinstance-name
+updates at a later stage
+
+docker service ls   /// lists running services (images and their replicas)
+docker service ps <id> /// lists replicas of a service, shows status of workers
+
+Docker Stacks
+---------------
+A stack is a group of inter-related services that put together form an entire application.
+
+As we could convert multiple docker run commands into a single docker compose yml file,
+we can do the same with docker services.
+
+Just write the docker service commands as a docker compose yml file, same as before.
+Note: docker compose file should have version '3' at least
+
+And then run this command to create your docker swarm conatiners:
+> docker stack deplay
+! to update the stack later call the same command, make sure you use the same name and file used
+
+example:
+docker stack deploy voting-app-stack --compose-file docker-stack.yml
+
+Visualization:
+if you have a large cluster, it gets difficult to interpret information using the docker
+service ls and ps commands. There's a visualizer available at docker hub called dockersamples/visualizer
+
+
+Playground
+-------------
+go to labs.play-with-docker.com to develop skills related to devops and work with actual servers
+go to labs.play-with-k8s.com to develop skills related to kubernetes and work with actual cluster

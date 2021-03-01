@@ -1,0 +1,65 @@
+version: '3.0'
+services:
+    redis:
+        image: redis
+        networks:
+            - back-end
+        deploy:
+            replicas: 1
+            resources:
+                limits:
+                    cpus: 0.01
+                    memory: 50M
+    db:
+        image: postgres:9.4
+        networks:
+            - back-end
+        environment:
+            - Passwort=123
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == node1
+                    - node.role == manager
+    vote:
+        image: voting-app    #### or build like next line
+        build: ./vote
+        ports:
+            - 5000:80
+        links:
+            - redis
+        networks:
+            - front-end
+            - back-end
+        deploy:
+            replicas: 2
+    result:
+        image: result-app
+        ports:
+            - 5001:80
+        links:
+            - db
+        depends_on:
+            - db
+        networks:
+            - front-end
+            - back-end
+        deploy:
+            replicas: 1
+    worker:
+        image: worker
+        links:
+            - redis
+            - db:db
+        networks:
+            - back-end
+        volumes:
+        - jenkins_home:/var/jenkins_home
+        deploy:
+            replicas: 1
+networks:
+    front-end:
+    back-end:
+volumes:
+  jenkins_home:

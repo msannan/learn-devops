@@ -1,0 +1,47 @@
+version: '3.0'
+services:
+    redis:
+        image: redis
+        networks:
+            - back-end
+    db:
+        image: postgres:9.4
+        networks:
+            - back-end
+        environment:
+            - Passwort=123
+    vote:
+        image: voting-app    #### or build like next line
+        build: ./vote
+        ports:
+            - 5000:80
+        links:
+            - redis
+        networks:
+            - front-end
+            - back-end
+    result:
+        image: result-app
+        ports:
+            - 5001:80
+        links:
+            - db
+        depends_on:
+            - db
+        networks:
+            - front-end
+            - back-end
+    worker:
+        image: worker
+        links:
+            - redis
+            - db:db
+        networks:
+            - back-end
+        volumes:
+        - jenkins_home:/var/jenkins_home
+networks:
+    front-end:
+    back-end:
+volumes:
+  jenkins_home:
