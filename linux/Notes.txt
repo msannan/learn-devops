@@ -1,3 +1,4 @@
+----------------------------
 Working with Shell - Basic
 ----------------------------
 Linux shell allows user to interact with the OS
@@ -77,7 +78,7 @@ OFFICE=devCorps: creates a new environment variable / modifies
 for persistence, add export commands to ~/.profile or ~/.pam_environment
 PS1="elmo:" : sets the variable that holds string to display at each new line
 
-
+---------------------
 LINUX CORE CONCEPTS
 ---------------------
 Linux Kernel:
@@ -206,6 +207,7 @@ Filesystem Hierarchy
 /usr - old systems for user home - modern systems all user apps data
 /var - logs for system, also has cached data
 
+---------------------
 PACKAGE MANAGEMENT
 ---------------------
 RPM -> RHEL, Centos, Fedora
@@ -270,3 +272,123 @@ APT is more user friendly
 APT has more user friendly output
 APT can be used to search a package
 we need apt-cache to search if we use apt-get
+
+
+-------------------------------
+Working with Shell - Advanced
+-------------------------------
+
+File Compression
+------------------
+du : disk usage
+    -k kilobytes
+    -h human readable
+    -l long output - more verbose
+    -s short output
+
+tar : tape archive
+    c – create a archive file.
+    x – extract a archive file.
+    v – show the progress of archive file.
+    f – filename of archive file.
+    t – viewing content of archive file.
+    j – filter archive through bzip2.
+    z – filter archive through gzip.
+    r – append or update files or directories to existing archive file.
+    W – Verify a archive file.
+    wildcards – Specify patterns in unix tar command.
+
+Compression Tools:
+    bzip2 - uncrompress by bunzip2
+    gzip  - uncrompress by gunzip
+    xz    - uncrompress by unxz
+zcat, bzcat, xzcat - allow reading compressed files without uncompressing
+
+tar -cf python.tar reptile/snake/python
+gzip python.tar
+
+Searching Files and directories
+---------------------------------
+locate xyz.txt
+- depends on mlocate db
+- run updatedb to update mlocate
+
+find /home/elmo -name Bunny.txt
+
+grep - find something in file
+grep second sample.txt
+grep -i capital sample.txt - case-insensitive
+grep -r "third line" /home/elmo - recursively look for a pattern within a directory
+grep -v "printed" sample.txt - all lines that do not contain the specified string
+grep -w exam examples.txt - looks for "exam" as a whole word
+grep -A1 Arsenal prem-league.txt - also print one line after the match
+grep -B3 Arsenal prem-league.txt - also print three lines before the match
+
+IO Redirection
+----------------
+Standard streams:
+1. Standard Input stdin
+    takes text as input
+2. Standard Output - stdout
+3. Standard Error - stderror
+
+> can be redirected to files
+STDOUT
+echo @SHELL > shell.txt - writes stdout to file
+echo @SHELL2 >> shell.txt - appends stdout to file
+STDERR
+echo @SHELL 2> shell.txt - writes stderr to file
+echo @SHELL 2>> shell.txt - appends stderr to file
+echo @SHELL 2> /dev/null - ignore and does not print errors
+*/dev/null is the bit bucket - a place to dump anything
+
+> command line pipes
+allows first commands stdout to be used as stdin of second command
+pipes are defined using vertical bar symbol
+    e.g: grep Hello sample.txt | less
+tee - prints but also overwrites to file
+    e.g: grep Hello sample.txt | tee shell.txt - print & overwrite file
+    e.g: grep Hello sample.txt | tee -a shell.txt - print & append to file
+
+> vi editor
+VI Editing commands
+    i - Insert at cursor (goes into insert mode)
+    a - Write after cursor (goes into insert mode)
+    A - Write at the end of line (goes into insert mode)
+    ESC - Terminate insert mode
+    u - Undo last change
+    U - Undo all changes to the entire line
+    o - Open a new line (goes into insert mode)
+    dd - Delete line
+    d3d - Delete 3 lines.
+    D - Delete contents of line after the cursor
+    C - Delete contents of a line after the cursor and insert new text. Press ESC key to end insertion.
+    dw - Delete word
+    4dw - Delete 4 words
+    cw - Change word
+    x - Delete character at the cursor
+    r - Replace character
+    R - Overwrite characters from cursor onward
+    s - Substitute one character under cursor continue to insert
+    S - Substitute entire line and begin to insert at the beginning of the line
+    ~ - Change case of individual character
+    yy - copy a line
+    p - paste
+    /line or ?line - seach line in file and move to first occurance
+        n - to go to next occurance
+        N - to go to previous occurance
+    alt+j - move slected block down
+    alt+k - move selected block up
+Moving within a file
+    k - Move cursor up
+    j - Move cursor down
+    h - Move cursor left
+    l - Move cursor right
+Saving and Closing the file
+    ZZ - Save the file and quit
+    :w - Save the file but keep it open
+    :q - Quit without saving
+    :wq - Save the file and quit
+    :q! - Quit without confirmation
+
+> vim = VI Improved
