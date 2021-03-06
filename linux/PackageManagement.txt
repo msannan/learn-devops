@@ -1,0 +1,65 @@
+---------------------
+PACKAGE MANAGEMENT
+---------------------
+RPM -> RHEL, Centos, Fedora
+DEB -> Ubuntu, Debian, Linux Mint
+
+DPKG Debian Package Manager
+APT Advanced Package Manager
+APT-GET Advanced Package Manager
+RPM RedHat Package manager
+YUM yellowdog update modifier
+DNF
+
+RPM vs YUM
+-----------
+RedHat Package manager
+.rpm file extension
+5 ops:
+1. install     rpm -ivh telnet.rpm
+2. uninstall   rpm -e telnet.rpm
+3. upgrade     rpm -Uvh telnet.rpm
+4. query       rpm -q telnet.rpm
+5. verifying   rpm -Vf <path_to_file>
+
+* RPM does not resolve package dependencies on its own, so we need YUM
+* YUM uses RPM under the hood
+
+yum stores repo info at /etc/yum.repos.d/*.repo
+
+yum install -y httpd
+yum repolist - displays all repos added to the system
+yum provides scp - check which repo provides scp
+yum remove httpd
+yum update telnet - updates a single package
+yum update - updates all packages
+
+DPKG vs APT
+-------------
+DPKG Debian package manager
+5 ops:
+1. install/upgrade     dpkg -i telnet.rpm
+2. uninstall           dpkg -r telnet.rpm
+3. list                dpkg -l telnet.rpm
+4. status              dpkg -s telnet.rpm
+5. verifying           dpkg -p <path_to_file>
+
+* DPKG does not resolve package dependencies on its own, so we need APT
+* APT uses DPKG under the hood
+
+DPKG stores sources info at /etc/apt/sources.list
+
+apt update - refresh all repos
+apt upgarde - upgrades exisint packages
+apt edit-sources - opens /etc/apt/sources.list in editor
+apt install telnet
+apt remove telnet
+apt search telnet
+apt list | grep telnet
+
+APT vs APT-GET
+----------------
+APT is more user friendly
+APT has more user friendly output
+APT can be used to search a package
+we need apt-cache to search if we use apt-get
