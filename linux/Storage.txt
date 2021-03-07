@@ -1,0 +1,139 @@
+---------------------
+Disks and Partitons
+---------------------
+Block Devices:
+a type of file found under /dev - usually represents a hardware that can store data
+    HDD, SSD etc
+data is read & written in blocks or chunks of space
+
+list block Devices:
+    lsblk
+    ls -l /dev | grep "^b"
+
+fdisk is used for CRUD ops on parititions
+    -l to print paritition table
+
+three types of parititions
+1. primary
+    used to boot OS
+2. extended
+    traditionally we could only have 4 primary parititions, so we can create
+        an extended paritition which contains manu logical parititions, it has
+        a paritition table of its own and is used as a disk.
+3. logical
+
+paritition schemes
+----------------------
+MBR - Mater Boot Record
+------------------------
+only 4 primary Partitons
+max size: 2TB
+if we need more than 4 parititions:
+    we need to create 4th paritition as an extended paritition
+    and carve out more parititions in it as logical parititions
+
+GPT - GUID paritition table
+------------------------------
+unlimited no. of primary parititions
+    RHEL only allows 128
+no limitation of max disk space
+
+gdisk DISK - to create GPT parititions
+* gdisk is just an improved version of fdisk to support gpt paritition table parititioning
+* menu driven
+
+----------------
+File Systems
+----------------
+Extended file system ext2, ext3, ext4
+
+                         ext2                           ext3                         ext4
+max file size            2TB                             2TB                         16TB
+max volume size          4TB                             4TB                         1EB
+                         supports compression            uses journal                uses journal (uses chksum for journal)
+                         supports linux permissions      backward compatible         backward compatible
+drawback                 long crash recovery
+
+Working with ext4
+------------------
+mkfs.ext4 /dev/sdb1
+mkdir /mnt.ext4;
+mount /dev/sdb1 /mnt/ext4
+
+for persistence upon restart:
+    echo "/dev/sdb1 /mnt/ext4 ext4 rw 0 0" >> /etc/fstab
+
+blkid /dev/vdc - see filesystem created on disk
+
+EXTERNAL STORAGE   -     DAS NAS & SAN
+----------------------------------------
+DAS - Direct Attached Storage
+    directly to host system
+    sees it as a connected block device
+    faster than NAS
+    dedicated to single server
+    not ideal for systems with multiple servers, needing to share storage
+NAS - Network Attached Storage
+    located away from hosts or servers that use it
+    data traffic is over the network
+    not recommended to store OS
+SAN - Storage Area Network
+    block storage for enterprize business critical applications
+    hight throughput
+    low latency
+    storage is allocated to hosts in the form of a LUN - logical unit number
+    LUN is a range of blocks provisioned from a pool of shared storage
+        presented to server as a logical disk
+    host system detects it as a raw disk
+        can create partitions & filesystems on top of it - mount to store data
+    can be ethernet based
+
+
+NFS - Network File system
+----------------------------
+does not store data in blocks, but as files
+can be mounted
+maintain /etc/exports on the NFS server
+    /softwrae/repos 10.61.35.201 10.61.35.202 10.61.35.203
+
+    * can be IP, hostname, ip range, wildcard addresses
+    * ideally there should be a firewall on the network to aceess NFS server
+
+exportfs -a : exports all entries from /etc/exports
+exportfs -o 10.61.35.201:/softwrae/repos : manually export a directory
+
+from client - mount to local dir by:
+    mount 10.61.112.101:/softwrare/repos  /mnt/softwrae/repos
+
+LVM - Logical Volume Manager
+------------------------------
+allows grouping of multiple volumes
+* allows resizing Logical volumes
+* we need to install lvm2 to use it
+* a volume group can have 1+ volumes
+
+1. identify free disks or partitions
+    say we have /dev/sdb available
+2. create physical volume (PV) objects for them
+    pvcreate /dev/sdb
+3. create volume group
+    vgcreate caleston_vg /dev/sdb
+4. create logical volumes
+    lvcreate -L 1G -n vol1 caleston_vg
+5. create filesystem
+    mkfs.ext4 /dev/caleston_vg/vol1
+    mkdir /mnt/vol1
+    mount /dev/caleston_vg/vol1 /mnt/vol1
+
+* resize logical volume
+    lvresize -L +1G -n /dev/caleston_vg/vol1 : increase by 1GB
+    !!! df -hP /mnt/vol1 : it will still show vol1 as 1GB, because filesystem is still 1GB
+    resize2fs /dev/caleston_vg/vol1 : matches the size of the logical volume, i-e, 2GB
+
+* /dev/mapper/caleston_vg-vol1 and /dev/caleston_vg/vol1 are both identical - aliases
+
+to display:
+    pvdisplay - lists all PV (names, size, volume group)
+    vgdisplay - lists all VG (names, total size, disk space used)
+    lvdisplay - lists all LV (names, total size, disk space)
+    lvs - lists all LV (names, VG, size)

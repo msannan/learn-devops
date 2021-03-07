@@ -23,6 +23,7 @@ What Record Types are stored in DNS server?
 
 ping to check if server is up
 nslookup to query hostname from dns server
+traceroute see devices in b/w you and the host
 
 Switching & Routing
 ----------------------
