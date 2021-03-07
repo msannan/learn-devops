@@ -1,0 +1,188 @@
+Linux Accounts
+-----------------
+Linux Security:
+    Access Controls
+    PAM
+    Network Security
+    SSH Hardening
+    SELinux
+
+Access Controls
+-----------------
+Account Types
+    1. user account:
+        username and password
+        has a uid
+        has a gid, can be multiple
+        information is stored at /etc/passwd
+
+        id elmo
+        > uid=1000(elmo) gid=1000(elmo) groups=1000(elmo),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),116(lpadmin),126(sambashare),999(docker)
+
+        grep -i elmo /etc/passwd
+        > elmo:x:1000:1000:Automotive Artificial Intelligence GmbH,,,:/home/elmo:/bin/bash
+        imp commands: who, last
+    2. super user has uid 0
+        has unrestricted access
+    3. system accounts have generally uid < 100 or between 500-1000
+        ssh and mail
+        normally dont have a home dir
+        dont need sudo access
+    4. service account
+        created when services are installed in linux
+        nginx, mercury are examples
+
+group:
+    collection of users
+    organise role or function
+    information is stored at /etc/group
+    has a gid
+
+su - switch user
+sudo - info at /etc/sudoers
+set shell in /etc/passwd to /usr/sbin/nologin to revoke users root access
+
+useradd bob - create user
+    -u uid
+    -g gid
+    -d home dir
+    -c comments
+    -e expiry date
+    -G multiple secondary groups
+    -s login shell
+passwd bob - change password
+whoami - username
+passwd: change current user password
+userdel bob - deletes user
+groupadd -g 111 bob
+groupdel - deletes group
+
+Access Control Files
+----------------------
+mostly in /etc
+all can view
+only root can change
+
+/etc/passwd has user info except passwords
+    USERNAME:PASSWORD:UID:GID:GECOS:HOMEDIR:SHELL
+        GECOS is csv general user info, name, phone no. etc
+/etc/shadow has hashed passwords
+    USERNAME:PASSWORD:LASTCHANGE:MINAGE:MAXAGE:WARN:INACTIVE:EXPDATE
+/etc/group has groups info
+    NAME:PASSWORD:GID:MEMBERS
+
+File Permissions and Ownership
+---------------------------------
+ls -l > gives file type, and permissions
+-rwxrwxr-x
+
+    -           r w x          r w x            r - x
+(file-type)  (for owner u)  (for group g)  (all other users)
+r = read (4)
+w = write (2)
+x = execute (1)
+- = no permissions (0)
+
+chmod octal-number file : change permissions
+chmod u+rwx abc.txt : gives full access to user
+chmod ugo+r-x abc.txt : gives read, revokes execute access to all
+chmod o-rwx abc.txt : revokes all access from other users
+chmod u+rwx,g+r-x,o-rwx abc.txt
+    gives full access to user
+    gives read, revokes execute access to group
+    revokes all access from others
+chmod 777 abc.txt : full access to everyone
+chmod 555 abc.txt : read+execute access to everyone
+chmod 660 abc.txt : rw for owner+group, no access for others
+chmod 750 abc.txt : full for owners, rw for group, no access for others
+
+chown bob:developer file
+    changes owner to bob and group to developer
+chown bob file
+    changes owner to bob and group is unchanged
+chgrp android file
+    changes group to android
+
+SSH and SCP
+-------------
+ssh user@<hostname or ip>
+ssh -l user <hostname or ip>
+* port 22 should be accessible
+need valid user/password or ssh key
+
+generate ssh key: (go password less)
+Key Pair = Private Key + Public Key
+
+ssh-keygen -t rsa
+    Public key at /home/elmo/.ssh/id_rsa.pub
+    Private key at /home/elmo/.ssh/id_rsa
+
+ssh-copy-id bob@devapp1 : copy id to remote machine
+    public key will be stored at
+    /home/bob/.ssh/authorized_keys
+
+scp SOURCE HOSTNAME:DEST : copies file from your system to remote server over ssh
+scp -pr : to copy a directory
+
+Network Security Using IP Tables
+----------------------------------
+FirewallD
+
+IPTables:-
+    install: sudo apt install iptables
+    list: iptables -L
+three types of chains in IPTables:
+    input
+        traffic coming into the system
+        iptables -A INPUT -p tcp -s 172.16.238.187 --dport 22 -j ACCEPT
+            -A add rule to bottom
+            -I add rule to top
+            -p protocol
+            -s source
+            -d destination
+            --dport destination port
+            -j action to take
+            -D delete
+    forward (not common)
+        for Network forwarding to other devices in Network
+    output
+        traffic going out of system
+examples:
+    iptables -A INPUT -p tcp -s --dport 22 -j DROP
+
+    iptables -A OUTPUT -p tcp -s 172.16.238.11 --dport 5432 -j ACCEPT
+    iptables -A OUTPUT -p tcp -s 172.16.238.15 --dport 80 -j ACCEPT
+    iptables -A OUTPUT -p tcp --dport 443 -j DROP
+    iptables -A OUTPUT -p tcp --dport 80 -j DROP
+    iptables -A INPUT -p tcp -s 172.16.238.187 --dport 80 -j ACCEPT
+
+    iptables -I INPUT -p tcp -s 172.16.238.187 --dport 443 -j ACCEPT
+
+    iptables -D OUTPUT 5
+
+netstat -an | grep 5432 : show connection source/dest port mapping
+
+Cronjobs
+----------
+Scheduling jobs
+
+run this command to add a chronjob
+    chrontab -e
+
+add this line at the end
+        0      21       *       *         *        uptime >> /tmp/system-report.txt
+    (minute) (hour)   (day)  (month)  (weekday)          (command)
+
+    08:10 AM 19th feb ->  10 8  19  2  *  CMD
+    08:10 AM 19th feb (if only Mondaay) ->  10 8  19  2  1  CMD
+    08:10 AM 19th of every month ->  10 8  19  *  *  CMD
+    08:10 AM every day ->  10 8  *  *  *  CMD
+    10 minute of every hour ->  10 *  *  *  *  CMD
+    every minute ->  * *  *  *  *  CMD
+    every 2 minutes ->  */2 *  *  *  *  CMD
+    9 PM every day ->  0 21  *  *  *  CMD
+
+crontab -b - lists all jobs
+tail /var/log/syslog - check if job was run
+
+* dont use sudo with chronjobs, otherwise it runs for the root user
