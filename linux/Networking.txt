@@ -1,0 +1,37 @@
+DNS - Domain Name Server
+--------------------------
+hostnames are stored at /etc/hosts
+    192.1.1.10 db
+
+dns conf file - stored nameserver ip
+/etc/resolv.conf
+    nameserver 192.168.1.100
+    nameserver 8.8.8.8
+    search mycompany.com <- this helps to resolve "web" for web.mycompany.com
+    search google.com <- this helps to resolve "maps" for maps.google.com
+
+order to look for a hostname is defined in /etc/nsswitch.conf
+...
+hosts:  files dns
+...
+* here it is set to first look in /etc/hosts file then the DNS.
+
+What Record Types are stored in DNS server?
+1. A: web-server with ipv4 addresses
+1. AAAA web-server with ipv6 addresses
+1. CNAME: mapping one name to another name
+
+ping to check if server is up
+nslookup to query hostname from dns server
+
+Switching & Routing
+----------------------
+ip link - list and modify interfaces on the host
+ip addr - show ip addresses assigned to those interfaces
+ip addr add 192.168.1.10/24 dev eth0 - set ip address on the interface
+route - displays existing routing table
+ip route add 192.168.2.0/24 via 192.168.1.1 - adds a route to connect to external an network
+ip route add default via 192.168.1.1 - adds tfe default route to connect to any external network
+sudo ip link set dev eth0 up - bring up an ethernet device
+
+these changes are local - for persistence add them to /etc/networks/interfaces
