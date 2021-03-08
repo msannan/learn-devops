@@ -1,0 +1,97 @@
+SYSTEMD and Service Management
+--------------------------------
+
+Define a bash script as a Service
+-----------------------------------
+add a file at /etc/systemd/system/project-mercury.service
+with these contents:
+    [Service]
+    ExecStart= /usr/bin/project-mercury.sh
+
+to run this service in the background:
+    sudo systemctl start project-mercury.service
+
+to check status
+    sudo systemctl status project-mercury.service
+
+to stop service
+    sudo systemctl stop project-mercury.service
+
+Enable service at boot
+-------------------------
+update the file at /etc/systemd/system/project-mercury.service
+add these contents:
+    [Unit]
+    Description=Python Django for project mercury
+    Documentation=http://wiki.caleston-dev.ca/mercury
+    After=postgresql.service
+
+    [Service]
+    ExecStart= /usr/bin/project-mercury.sh
+
+    User=project_mercury
+    Restart=on-failure
+    RestartSec=10
+
+    [Install]
+    WantedBy graphical.target
+
+* the WantedBy value should be same as systemd target or the runlevel
+* by specifying user to project_mercury, this service account will be able to run the service
+* by specifying Restart, we Enable the service to re-run if it fails
+* by specifying RestartSec, we set the time (in seconds) for the system to wait before restarting
+* with systemd, service events are automatically logged, no config required
+* add an After tag under [Unit] to specify any dependencies on other services required before runing the script
+* Description and Documentation in [Unit] are optional
+
+to check the changes we make in the service files, run:
+    sudo systemctl daemon-reload
+    sudo systemctl start project-mercury.service
+
+
+SYSTEMD Tools
+------------------
+SYSTEMCTL
+* manage system state
+* start/stop/restart/reload
+* enable/disable services
+* list and manage units
+* list and update targets
+
+commands:
+    systemctl start docker
+    systemctl start docker
+    systemctl restart docker - stop + start
+    systemctl reload docker - remain running + re-read configuration files
+
+    systemctl enable docker - make persistent across reboot
+    systemctl disable docker - disable at reboot
+
+    systemctl status docker - displays info about state of service
+        states can be
+            active (running)
+            inactive (stopped)
+            failed (crashed, error, timeout etc)
+            activating (transient state)
+            deactivating (transient state)
+
+    systemctl daemon-reload -   after changing Service Unit File, it reloads
+                                the services manager configs and makes systemd
+                                aware of the changes
+
+    systemctl edit project-mercury.service --full
+        * opens a text editor to change service files
+        * systemctl daemon-reload is not required in this way
+
+    systemctl get-default - get current runlevel or target
+    systemctl set-default multi-user.target - set runlevel or target
+
+    systemctl list-units --all - lists all units the systemctl has loaded
+
+JOURNALCTL
+* query systemd logging system (journal)
+- troubleshoot issues, i-e, service failures
+journalctl - prints all the log entries / all history
+journalctl -b - prints all the log entries since last reboot
+journalctl -u UNIT - prints log entries for specific service
+    journalctl -u docker.service
