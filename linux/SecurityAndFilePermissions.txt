@@ -103,6 +103,9 @@ chown bob file
 chgrp android file
     changes group to android
 
+* gives ownership of all files under dir to a user
+sudo chown -R my_username /opt/app-code
+
 SSH and SCP
 -------------
 ssh user@<hostname or ip>

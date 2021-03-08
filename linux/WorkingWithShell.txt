@@ -92,6 +92,7 @@ du : disk usage
 
 tar : tape archive
     c – create a archive file.
+    C – change the dir to extract to
     x – extract a archive file.
     v – show the progress of archive file.
     f – filename of archive file.

@@ -32,9 +32,10 @@ add these contents:
     User=project_mercury
     Restart=on-failure
     RestartSec=10
+    WorkingDirectory=/opt/caleston-code/mercuryProject
 
     [Install]
-    WantedBy graphical.target
+    WantedBy=graphical.target
 
 * the WantedBy value should be same as systemd target or the runlevel
 * by specifying user to project_mercury, this service account will be able to run the service
