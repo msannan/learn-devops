@@ -136,7 +136,7 @@ un*frigging*believable
 | row2 - column-1 | row2 - column-2 |
 
 
-| Left Aligned Column | Center Aligned Column | Center Aligned Column |
+| Left Aligned Column | Center Aligned Column | Right Aligned Column |
 | :--- | :---: | ---: |
 | r1c1 | r1c2 | r1c3 |
 | row2 - column-1 | row2 - column-2 |row-2 \| column-3|
