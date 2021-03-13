@@ -1,0 +1,36 @@
+reference: https://logz.io/blog/prometheus-monitoring
+
+Prometheus =  storage backend
+Grafana = analysis and visualization
+
+* Prometheus collects metrics from monitored targets by
+scraping metrics from HTTP endpoints on these targets
+
+e.g: memory used, storage consumed, status of a service
+
+* Grafana acts as a visualization layer only
+
+We'll use Dockerized deployment of prometheus and grafana
+from https://github.com/stefanprodan/dockprom
+* it sets up cAdvisor, grafana, and Promotheus with NodeExporter and AlertManager
+
+The default configuration used in this image already defines Prometheus as a job,
+with a scraping interval of 15 seconds, so the server is set to monitor itself.
+
+- job_name: 'prometheus'
+   scrape_interval: 10s
+   static_configs:
+     - targets: ['localhost:9090']
+
+To install this stack, use these commands:
+    git clone https://github.com/stefanprodan/dockprom
+    cd dockprom
+    docker-compose up -d
+
+
+--------------------------------------------------------------
+install docker-compose
+echo "cryptography==3.3.2" > /tmp/requirements.txt
+sudo pip3 install -U docker-compose -r /tmp/requirements.txt
+rm /tmp/requirements.txt
+----------------------------------------------------------------
