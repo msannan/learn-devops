@@ -130,6 +130,11 @@ scp -pr : to copy a directory
 Network Security Using IP Tables
 ----------------------------------
 FirewallD
+If you can not access a port from another system, the problem may be that this port is not
+allowed to be accessed by the VM, we can allow that using firewallD.
+Run the command:
+    sudo firewall-cmd --zone=public --permanent --add-port=3000/tcp
+Read more on FirwallD [here][firewallD].
 
 IPTables:-
     install: sudo apt install iptables
