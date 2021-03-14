@@ -23,6 +23,10 @@ Ansible uses playbooks for IT automation.
 
 playbooks are written in __*YAML*__ (YAML Ain't Markup Language), a Unicode-based, human-readable, and computationally powerful data serialization language
 
+<blockquote>
+Ansible control machines can only be linux, however, targets can either be windows or linux.
+</blockquote>
+
 # Inventory
 Ansible can work with one or multiple servers at a single time.
 
@@ -53,6 +57,9 @@ other inventory parameters:
 * ansible_user - root/administrator
 * ansible_ssh_pass - Password for linux
 * ansible_password - Password for windows
+
+Ansible also supports dynamic inventory files using scripts.
+Lets say we pass a python script as `ansible-playbook -i inventory.py playbook.yml`, the python group is responsible to return a list of inventory records. This is advanced topic, read more in Ansible documentation.
 
 # Playbooks
 <blockquote>
@@ -106,6 +113,8 @@ modules are actions that can be run on the targets
 </blockquote>
 
 there are many modules, i-e, system, commands, files, databases, cloud, windows, etc. See docs on ansible.com to know more.
+
+We can also develop custom modules ourselves. This is advanced topic, read more in Ansible documentation.
 
 ### Command Module
 this is used to execute a command on a remote node

@@ -161,3 +161,5 @@ To use a role: `ansible-galaxy install geerlingguy.mysql`. The role is extracted
 To view all installed roles: `ansible-galaxy list`.<br />
 To view config: `ansible-config dump | grep ROLE`.<br />
 To install role to specifiv directory: `ansible-galaxy install -p ./roles`.
+
+website for Ansible Galaxy is galaxy.ansible.com
