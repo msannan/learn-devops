@@ -21,12 +21,12 @@ Ansible is a powerful IT automation tool that makes it possible to automate even
 
 Ansible uses playbooks for IT automation.
 
-playbooks are written in yaml
+playbooks are written in __*YAML*__ (YAML Ain't Markup Language), a Unicode-based, human-readable, and computationally powerful data serialization language
 
 # Inventory
 Ansible can work with one or multiple servers at a single time.
 
-Agentless
+Agentless - Ansible is agentless.
 
 Ansible uses an inventory file, default stored at `/etc/ansible/hosts`, an example of inventory file:
 
@@ -82,7 +82,7 @@ A task is a single action to be performed on each host. like:
             - name: 'Execute script on server'
               script: test_script.sh
     -
-        name: Play 2
+        name: 'Play 2'
         hosts: localhost
         tasks:
             - name: install web server
@@ -114,7 +114,7 @@ this is used to execute a command on a remote node
 # Variables
 
 <blockquote>
-store values that varies with differnt items
+store values that varies with different items
 </blockquote>
 
 we can define variables inside the playbook as:
@@ -125,6 +125,10 @@ we can define variables inside the playbook as:
         vars:
             dns_server: 10.1.250.10
         tasks:
+            - var:
+                my_var:
+                    is_used: False
+                    is_example: True
             - lineinfile:
                   path: /etc/resolv.conf
                   line: 'nameserver {{ dns_server }}'
