@@ -197,3 +197,7 @@ Saving and Closing the file
     :q! - Quit without confirmation
 
 > vim = VI Improved
+
+
+Use 95%+ CPU by:
+yes > /dev/null &
