@@ -212,7 +212,7 @@ Just write the docker service commands as a docker compose yml file, same as bef
 Note: docker compose file should have version '3' at least
 
 And then run this command to create your docker swarm conatiners:
-> docker stack deplay
+> docker stack deploy
 ! to update the stack later call the same command, make sure you use the same name and file used
 
 example:

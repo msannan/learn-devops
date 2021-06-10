@@ -30,7 +30,7 @@ every time series is identifiesd by a **metric name** and a set of **key-value p
 
     metric: go_memstat_alloc_bytes
 
-time series data also consists of actual data called **sampes**. It be either a **float64** value or a **millisecond-precision** timestamp.
+time series data also consists of actual data called **samples**. It be either a **float64** value or a **millisecond-precision** timestamp.
 
 The notation of time series id often this:
 

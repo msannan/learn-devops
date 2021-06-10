@@ -1,6 +1,6 @@
 # Devops Essentials
 
-DevOps = Development + Operations
+DevOps = `Development` + `Operations`
 
 Aims:
 1. Shorter Development Cycles
