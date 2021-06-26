@@ -46,3 +46,9 @@ Files in a repository go through `three` stages before being under version contr
     the file has been added to git's version control but changes have not been committed
 ### 3. Committed:
     the change has been committed
+
+# What are 3 methods of git reset?
+
+1. `--soft`: uncommit changes, changes are left staged (index).
+1. `--mixed` (default): uncommit + unstage changes, changes are left in working tree.
+1. `--hard`: uncommit + unstage + delete changes, nothing left.
