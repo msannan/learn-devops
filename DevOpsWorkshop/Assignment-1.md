@@ -41,10 +41,15 @@ The key difference between `Git` and `GitHub` is that Git is an `open-source` to
 Files in a repository go through `three` stages before being under version control with git:
 
 ### 1. Untracked:
+
     the file exists, but is not part of git's version control
+
 ### 2. Staged:
+
     the file has been added to git's version control but changes have not been committed
+
 ### 3. Committed:
+
     the change has been committed
 
 # What are 3 methods of git reset?
