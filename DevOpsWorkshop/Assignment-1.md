@@ -35,3 +35,14 @@ There are many benefits to moving your business to the cloud:
 # Difference b/w Git & Github
 
 The key difference between `Git` and `GitHub` is that Git is an `open-source` tool developers install `locally` to manage source code, while `GitHub` is an `online service` to which developers who use Git can connect and upload or download resources.
+
+# Stages of Git
+
+Files in a repository go through `three` stages before being under version control with git:
+
+### 1. Untracked:
+    the file exists, but is not part of git's version control
+### 2. Staged:
+    the file has been added to git's version control but changes have not been committed
+### 3. Committed:
+    the change has been committed
