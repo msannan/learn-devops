@@ -127,6 +127,9 @@ ssh-copy-id bob@devapp1 : copy id to remote machine
 scp SOURCE HOSTNAME:DEST : copies file from your system to remote server over ssh
 scp -pr : to copy a directory
 
+this should be installed on server:
+    sudo apt-get install openssh-server
+
 Network Security Using IP Tables
 ----------------------------------
 FirewallD
