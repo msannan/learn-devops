@@ -1,0 +1,28 @@
+QUIZ:
+Rebase vs Merge
+In rebase, we pick up all the commits in our branch and put them back one by one on the base branch. Commit signature is changed.
+While in a merge, commit history is kept intact, commit from feature/dev branch are copied to base branch. A new merge commit is also added which shows the changes that occured during the merge operation.
+
+How to create & checkout to new branch
+git checkout -b my-feature-branch main
+
+Why and how do conflicts occur
+when two branches have committed to same file at the same position.
+
+What is stashing and write its commands
+Stashing works like a trash. We can dump our changes temporarily. It is across the repository, not just one branch. Its implemented as a stack. LIFO.
+
+How to contribute to Open source projects
+
+
+Write some best practices of Git
+Work in small feature branches. Stay relevant to the scope of your branch. Try dividing into small feature branches. Merge frequently with base branch. Commit your changes more frequently.
+
+Write differences between VMs & Containers
+Under a VM environment, each workload needs a complete OS. But with a container environment, multiple workloads can run with 1 OS. The bigger the OS footprint, the more environment benefits from containers. With this, it brings further benefits like Reduced IT management resources, reduced size of snapshots, quicker spinning up apps, reduced & simplified security updates, less code to transfer, migrate and upload workloads.
+
+How to persist data in Containers
+We can use the volume mouting or the bind mounting.
+
+Why and how are networks used in Docker
+Networks in dockers are handled by docker itself. There are four options: overlay, bridged, none, host.
