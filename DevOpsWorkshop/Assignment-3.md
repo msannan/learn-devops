@@ -12,7 +12,7 @@ Try to use specific images, for instance, use python image itself as base image 
 
 # What are multi-stage builds
 
-Multi-stage builds help us optimize our Docker image sizes. For example, we have to containerize an application written in C++. The user is only interested in running the applicaiton and not the complicated compiling/building steps involved. We can use a multi-stage build to first create a temporary image which won't be part of the final image, this image installs all the compiling/building tools and builds the application. Then, we can create another image on top of it which just copies the final application. Multi-stage builds also improve readibility of the Dockerfile.
+Multi-stage builds help us optimize our Docker image sizes. For example, we have to containerize an application written in C++. We are only interested in running the applicaiton and not the complicated compiling/building steps involved. We can use a multi-stage build to first create a temporary image which won't be part of the final image, this image installs all the compiling/building tools and builds the application. Then, we can create another image on top of it which just copies the final application. Multi-stage builds also improve readibility of the Dockerfile.
 
 # Explain containers vs Image
 
