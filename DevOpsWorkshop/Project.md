@@ -1,3 +1,5 @@
+ARCHIVED - moved to project repo at https://github.com/aliarslan-cs/devops-workshop-project
+
 # Phase-I
 
 You can create any number of microservices you want (2 at least), Better is one of them `should connect to database`. If you are uncomfortable with coding, You can use the code that was presented in the class(Frontend & Backend)
