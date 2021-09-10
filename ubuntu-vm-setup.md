@@ -2,7 +2,7 @@
 
 ## Install Oracle VM VirtualBox
 
-1. Go to https://www.virtualbox.org/, click Downloads, and download the installer for windows under "". At the time of this writing, the latest version is available [here](https://download.virtualbox.org/virtualbox/6.1.26/VirtualBox-6.1.26-145957-Win.exe).
+1. Go to https://www.virtualbox.org/, click Downloads, and download the installer for windows under "VirtualBox x.x.xx platform packages". At the time of this writing, the latest version is available [here](https://download.virtualbox.org/virtualbox/6.1.26/VirtualBox-6.1.26-145957-Win.exe).
 1. Install VirtualBox using the downloaded installer.
 
 ## Get the VM Image
