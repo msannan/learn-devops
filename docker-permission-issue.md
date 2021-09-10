@@ -7,15 +7,15 @@ If you also face this bug, the following may help you:
 
 1. Create the docker group if it does not exist
 
-    `sudo groupadd docker`
+    sudo groupadd docker
 
 1. Add your user to the docker group.
 
-    `sudo usermod -aG docker $USER`
+    sudo usermod -aG docker $USER
 
 1. Run the following command or Logout and login again and run (if that doesn't work you may need to reboot your machine first)
 
-    `newgrp docker`
+    newgrp docker
 
 <blockquote>
 this will allow you to run docker as non-root user.
