@@ -6,7 +6,7 @@ Docker utilizer LXC containers, ??? todo: study other types
 
 Google Process level changes - containers/dockers are based on these
 1- namespaces (a process running in a namespace can not meddle resources of another process in another namespace)
-2- c group (capacity assigned to a group, RAM assigned categorically)
+2- c group (capacity assigned to a group, provides mechanism to limit and monitor system resources like CPU time, system memory, disk bandwidth, network bandwidth, etc)
 
 How to get started?
 Go to docks.docker.com and click on Get Docker, select your OS and follow the procedure on
